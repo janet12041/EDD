@@ -1,0 +1,221 @@
+package mx.unam.ciencias.edd.proyecto2;
+
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.InputStreamReader;
+import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.NoSuchElementException;
+import mx.unam.ciencias.edd.Lista;
+
+/**
+ * <p>Clase para estructuras .</p>
+ *
+ * <p>Estructuras nos permite tener una estructura de datos (listas, arreglos, 
+ * pilas, colas, árboles binarios, árboles binarios completos, árboles binarios
+ * ordenados, árboles rojinegros, árboles AVL, gráficas y montículos mínimos) a
+ * partir de un archivo y graficarla.</p>
+ */
+public class Estructuras {
+
+    Lista<String> estructuras = new Lista<String>();
+
+    String estructura;
+    Lista<Integer> elementos = new Lista<Integer>();
+
+    public Estructuras() {
+	estructuras.agrega("Lista");
+	estructuras.agrega("Arreglo");
+	estructuras.agrega("Pila");
+	estructuras.agrega("Cola");
+	estructuras.agrega("ArbolBinario");
+	estructuras.agrega("ArbolBinarioCompleto");
+	estructuras.agrega("ArbolBinarioOrdenado");
+	estructuras.agrega("ArbolRojinegro");
+	estructuras.agrega("ArbolAVL");
+	estructuras.agrega("Grafica");
+	estructuras.agrega("MonticuloMinimo");
+    }
+    
+    /* Lista de lineas. */
+    private Lista<String> lineas = new Lista<String>();
+
+    /**
+     * Regresa la lista de líneas.
+     * @return la lista de líneas.
+     */
+    public Lista<String> getLineas() {
+	return lineas;
+    }
+
+    /**
+     * Carga un archivo o la entrada estándar a la lista de líneas.
+     * @param archivo el archivo que se desea cargar.
+     */
+    public void carga(String archivo) {
+	try{
+	    InputStreamReader isIn;
+
+	    /* Obtenemos lo que se pasa por entrada estándar. */
+	    if (archivo == "") 
+		isIn= new InputStreamReader(System.in);
+	    /* Obtenemos el archivo. */
+	    else
+		isIn= new InputStreamReader(new FileInputStream(archivo));
+	   
+	    BufferedReader in = new BufferedReader(isIn);
+	    
+	    if(in != null) {
+		String linea;
+		while ((linea = in.readLine()) != null)
+		    procesa(linea);
+	    } /*else {
+		System.out.println("Es necesario ingresar el nombre de la "
+				  + "estructura de datos y sus elementos");
+		System.exit(1);
+		}*/
+	    in.close();
+	    
+	 }catch (IOException e){
+	    System.out.printf("No pude cargar el archivo \"%s\".\n",
+                              archivo);
+	    System.exit(1);
+	 }
+    }
+
+    /** 
+     * Procesa una linea de texto para definir el nombre de la estructura 
+     * y sus elementos. 
+     * @param linea la linea de texto.
+     */
+    private void procesa(String linea) {
+
+	/* Elimina todos los caracteres después de un "#". */
+	linea = linea.replaceAll("#.*$","");
+
+	String arr[] = new String[2];
+	arr[1] = linea;
+
+	do {
+	    arr = arr[1].split("\\s+", 2);
+	    if(!arr[0].isEmpty()) {
+		
+		/* Define el nombre de la estructura. */
+		if(estructura == null) {
+		    if(!estructuras.contiene(arr[0])) {
+			System.out.println("El nombre de la estructura"
+					   + " de datos es inválida.\n");
+			System.out.println("Estructuras válidas: ");
+			for(String e : estructuras)
+			    System.out.println(e);
+			System.exit(1);
+		    }
+		    estructura = arr[0];
+			
+		/* Agrega un elemento a la lista de elementos. */
+		} else {
+		    try {
+			elementos.agrega(Integer.parseInt(arr[0]));
+		    } catch(NumberFormatException e) {
+			System.out.println("Los elementos de la estructura"
+					  + "de datos deben ser enteros.");
+			System.exit(1);
+		    }
+		}
+		    
+	    }
+	} while(arr.length == 2 && !arr[1].isEmpty());
+
+	if(estructura == "Grafica" && elementos.getLongitud()%2 != 0) {
+	    System.out.println("El número de elementos debe ser par.");
+	    System.exit(1);
+	}
+    }
+
+    /**
+     * Grafica la estructura cargada.
+     */
+    public void grafica() {
+     
+        switch(estructura) {
+	case "Lista": graficaLista();
+	    break;
+	case "Arreglo":
+	    break;
+	case "Pila":
+	    break;
+	case "Cola":
+	    break;
+	case "ArbolBinario":
+	    break;
+	case "ArbolBinarioCompleto":
+	    break;
+	case "ArbolBinarioOrdenado":
+	    break;
+	case "ArbolRojinegro":
+	    break;
+	case "ArbolAVL":
+	    break;
+	case "Grafica":
+	    break;
+	case "MonticuloMinimo":
+	    break;
+	}
+    }
+
+    public String cuadrado(int x, int y, int num) {
+        String s =
+	    "<rect x=\""+x+"\" y=\""+y+"\" width=\"60\" height=\"40\"/>\n" +
+	    "<text fill=\"white\" font-family=\"sans-serif\" font-size=\"20\" " +
+	    "x=\""+x+"\" y=\""+(y+5)+"\" text-anchor=\"middle\">"+num+"</text>\n";
+	return s;
+    }
+
+    public String
+	flecha(int x1, int y1, int x2, int y2, boolean izq, boolean der) {
+	String s = linea(x1, y1, x2, y2);
+	if(izq)
+	    s += "<polyline points=\"0,100 50,25 50,75 100,0\" />\n";
+	if(der)
+	    s += "<polyline points=\"0,100 50,25 50,75 100,0\" />\n";
+	return s;
+    }
+
+    public String linea(int x1, int y1, int x2, int y2) {
+	String s =
+	    "<line x1=\""+x1+"\" y1=\""+y1+"\" x2=\""+x2+"\" y2=\""+y2+"\" " +
+	    "stroke=\"black\" stroke-width=\"3\" />\n";
+	return s;
+    }
+
+    public String circulo(int cx, int cy, String color, int num) {
+        String s =
+	    "<circle cx=\""+cx+"\" cy=\""+cy+"\" r=\"20\" stroke=\""+color+"\" " +
+	    "stroke-width=\"3\" fill=\""+color+"\" />\n" +
+	    "<text fill=\"white\" font-family=\"sans-serif\" font-size=\"20\" " +
+	    "x=\""+x+"\" y=\""+(y+5)+"\" text-anchor=\"middle\">"+num+"</text>\n";
+	return s;
+    }
+
+    public void graficaLista() {
+	String s = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
+	s += "<svg width=\"500\" height=\"400\">\n";
+	s += "<g>\n";
+
+	int x = ;
+	int y = ;
+
+	while() {
+
+	}
+	
+	s += "</g>\n";
+	s += "</svg>";
+ 
+	System.out.println(s);
+    }
+}

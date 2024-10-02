@@ -1,0 +1,31 @@
+package mx.unam.ciencias.edd.proyecto2;
+
+import mx.unam.ciencias.edd.*;
+
+public class Flecha {
+
+    private int anchoT = 4;
+    private int altoT = 3;
+    private Linea linea = new Linea();
+
+    public String
+	toString(int x1, int y1, int x2, int y2, boolean izq, boolean der) {
+        String s = linea.toString(x1, y1, x2, y2);
+	if(izq) {
+	    String u = (x1+anchoT)+","+(y1-altoT)+" ";
+	    String m = x1+","+y1+" ";
+	    String d = (x1+anchoT)+","+(y1+altoT);
+	    s += "<polygon points=\""+u+m+d+"\" stroke=\"black\" " +
+		"stroke-width=\"2\" />\n";
+	}
+	if(der) {
+	    String u = (x2-anchoT)+","+(y2-altoT)+" ";
+	    String m = x2+","+y2+" ";
+	    String d = (x2-anchoT)+","+(y2+altoT);
+	    s += "<polygon points=\""+u+m+d+"\" stroke=\"black\" " +
+		"stroke-width=\"2\" />\n";
+	}
+	return s;
+    }
+
+}
